@@ -14,15 +14,14 @@ public class TestMain {
 	}
 
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		generateHistogram();
+		File imageFile = new File("src/imageSegmentation/image1.jpg");
+		int[] hist = generateHistogram(imageFile);
 		
+		System.out.println(hist);
 	}
 	
-	public static void generateHistogram() throws IOException {
+	public static int[] generateHistogram(File imageFile) throws IOException {
 		int[] histogramArray = new int[256];
-
-        File imageFile = new File("src/imageSegmentation/image1.jpg");
         BufferedImage image = ImageIO.read(imageFile);
 
         for(int h = 0; h < image.getHeight(); h++)
@@ -34,9 +33,7 @@ public class TestMain {
             }
         }
         
-        for(int i = 0; i<histogramArray.length; i++) {
-        	System.out.println(histogramArray[i]);
-        }
+        return histogramArray;
 	} //end generateHistogram()
 
 }
