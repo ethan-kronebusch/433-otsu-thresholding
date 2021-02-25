@@ -14,12 +14,14 @@ public class TestMain {
 	}
 
 	public static void main(String[] args) throws IOException {
-		File imageFile = new File("src/imageSegmentation/image1.jpg");
+		File imageFile = new File("src/imageSegmentation/smile.jpg");
 		int[] hist = generateHistogram(imageFile);
 		
 		for(int x : hist) {
-			System.out.println(x);
+			System.out.print(x + ", ");
 		}
+		
+		
 	}
 	
 	public static int[] generateHistogram(File imageFile) throws IOException {
