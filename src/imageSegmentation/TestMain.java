@@ -17,7 +17,9 @@ public class TestMain {
 		File imageFile = new File("src/imageSegmentation/image1.jpg");
 		int[] hist = generateHistogram(imageFile);
 		
-		System.out.println(hist);
+		for(int x : hist) {
+			System.out.println(x);
+		}
 	}
 	
 	public static int[] generateHistogram(File imageFile) throws IOException {
