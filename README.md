@@ -1,1 +1,0 @@
-# 433-otsu-thresholding
