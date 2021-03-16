@@ -34,9 +34,8 @@ public class testMainFX extends Application {
 			bc.getData().add(tempSeries);
 		}
         
-        
+        bc.setLegendVisible(false);
         Scene scene  = new Scene(bc,800,600);
-        
         stage.setScene(scene);
         stage.show();
     }
