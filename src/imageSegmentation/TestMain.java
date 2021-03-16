@@ -15,29 +15,68 @@ public class TestMain {
 
 	public static void main(String[] args) throws IOException {
 		File imageFile = new File("src/imageSegmentation/smile.jpg");
-		int[] hist = generateHistogram(imageFile);
+		double[] hist = generateHistogram(imageFile);
 		
-		for(int x : hist) {
+		for(double x : hist) {
 			System.out.print(x + ", ");
 		}
 		
-		
+		System.out.println("\n" + retrieveK(hist));
 	}
 	
-	public static int[] generateHistogram(File imageFile) throws IOException {
-		int[] histogramArray = new int[256];
+	public static double[] generateHistogram(File imageFile) throws IOException {
+		double[] histogramArray = new double[256];
         BufferedImage image = ImageIO.read(imageFile);
-
+        double pixelValue = 1/(image.getHeight()*image.getWidth());
+        
         for(int h = 0; h < image.getHeight(); h++)
         {
             for(int w = 0; w < image.getWidth(); w++)
             {
                 Color c = new Color(image.getRGB(w, h));
-                histogramArray[c.getRed()]++;
+                histogramArray[c.getRed()] += pixelValue;
             }
         }
         
         return histogramArray;
 	} //end generateHistogram()
-
+	
+	public static double retrieveK(double[] histogram) {
+		double globalMean = 0, optK = 0, maxBCV = 0, bcv;
+		
+		//calculate global mean from histogram
+		for(int i = 0; i<histogram.length; i++) {
+			globalMean += i*histogram[i];
+		}
+		
+		//find the maximum between-class variance for K
+		for(int k = 0; k<histogram.length; k++) {
+			bcv = betweenClassVariance(histogram, k, globalMean);
+			if(bcv < 0) {System.exit(88);}
+			if(bcv > maxBCV) {
+				optK = k;
+				maxBCV = bcv;
+			}
+		}
+		
+		return optK;
+	}
+	
+	public static double betweenClassVariance(double[] histogram, double k, double globalMean) {
+		double cumMean = 0, classProb = 0, bcv;
+		
+		//calculate class probability and cumulative mean
+		for(int i = 0; i <= k; i++) {
+			classProb += histogram[i];
+		}
+		for(int i = 0; i <= k; i++) {
+			cumMean += i*histogram[i];
+		}
+		
+		//calculate the between-class variance
+		bcv = Math.pow(globalMean*classProb-cumMean, 2);
+		bcv /= classProb*(1-classProb);
+		
+		return bcv;
+	}
 }
