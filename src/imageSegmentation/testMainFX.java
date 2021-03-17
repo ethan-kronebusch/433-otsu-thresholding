@@ -47,7 +47,7 @@ public class testMainFX extends Application {
     public static double[] generateHistogram(File imageFile) throws IOException {
 		double[] histogramArray = new double[256];
         BufferedImage image = ImageIO.read(imageFile);
-        double pixelValue = 1/(image.getHeight()*image.getWidth());
+        double pixelValue = (double)1/(image.getHeight()*image.getWidth());
         
         for(int h = 0; h < image.getHeight(); h++)
         {
