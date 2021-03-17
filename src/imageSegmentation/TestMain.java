@@ -14,7 +14,7 @@ public class TestMain {
 	}
 
 	public static void main(String[] args) throws IOException {
-		File imageFile = new File("src/imageSegmentation/smile.jpg");
+		File imageFile = new File("src/imageSegmentation/swordcandle.png");
 		double[] hist = generateHistogram(imageFile);
 		
 		for(double x : hist) {

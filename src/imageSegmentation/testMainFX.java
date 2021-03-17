@@ -19,7 +19,7 @@ public class testMainFX extends Application {
  
     @Override
     public void start(Stage stage) throws IOException {
-    	File imageFile = new File("src/imageSegmentation/smile.jpg");
+    	File imageFile = new File("src/imageSegmentation/swordcandle.png");
 		double[] hist = generateHistogram(imageFile);
     	
         stage.setTitle("Histogram");
