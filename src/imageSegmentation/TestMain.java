@@ -14,8 +14,10 @@ public class TestMain {
 	}
 
 	public static void main(String[] args) throws IOException {
-		File imageFile = new File("src/imageSegmentation/swordcandle.png");
-		double[] hist = generateHistogram(imageFile);
+		File imageFile = new File("src/imageSegmentation/swordcandle.jpg");
+		BufferedImage imageOut, image = ImageIO.read(imageFile);
+		double[] hist = generateHistogram(image);
+		double optK;
 		
 		double total = 0;
 		for(double x : hist) {
@@ -23,12 +25,22 @@ public class TestMain {
 			System.out.print(x + ", ");
 		}
 		
-		System.out.println("\n" + total + "\n" + retrieveK(hist));
+		optK = retrieveK(hist);
+		System.out.println("\n" + total + "\n" + optK);
+		
+		imageOut = thresholdImage(ImageIO.read(imageFile), optK);
+		
+		//save output image
+		try {
+			File outputFile = new File("src/imageSegmentation/" + imageFile.getName().substring(0, imageFile.getName().lastIndexOf('.')) + "_segmented.jpg");
+			ImageIO.write(imageOut, "jpg", outputFile);
+		}catch(IOException ie) {
+			ie.printStackTrace();
+		}
 	}
 	
-	public static double[] generateHistogram(File imageFile) throws IOException {
+	public static double[] generateHistogram(BufferedImage image) throws IOException {
 		double[] histogramArray = new double[256];
-        BufferedImage image = ImageIO.read(imageFile);
         double pixelValue = (double)1/(image.getHeight()*image.getWidth());
         
         for(int h = 0; h < image.getHeight(); h++)
@@ -79,5 +91,26 @@ public class TestMain {
 		bcv /= classProb*(1-classProb);
 		
 		return bcv;
+	}
+	
+	public static BufferedImage thresholdImage(BufferedImage input, double k) {
+		int height = input.getHeight();
+		int width = input.getWidth();
+		BufferedImage output = new BufferedImage(width, height, input.getType());
+		
+		for(int h = 0; h < height; h++)
+        {
+            for(int w = 0; w < width; w++)
+            {
+                Color c = new Color(input.getRGB(w, h));
+                if(c.getRed() <= k) {
+                	output.setRGB(w, h, Color.black.getRGB());
+                }else {
+                	output.setRGB(w, h, Color.white.getRGB());
+                }
+            }
+        }
+		
+		return output;
 	}
 }
