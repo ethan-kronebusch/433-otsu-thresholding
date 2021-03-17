@@ -20,11 +20,11 @@ public class testMainFX extends Application {
     @Override
     public void start(Stage stage) throws IOException {
     	File imageFile = new File("src/imageSegmentation/smile.jpg");
-		int[] hist = generateHistogram(imageFile);
+		double[] hist = generateHistogram(imageFile);
     	
         stage.setTitle("Histogram");
         final CategoryAxis xAxis = new CategoryAxis();
-        final NumberAxis yAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis(0,1,1);
         final BarChart<String,Number> bc = new BarChart<String,Number>(xAxis,yAxis);
         
         for(int i = 0; i<hist.length; i++) {
@@ -44,16 +44,17 @@ public class testMainFX extends Application {
         launch(args);
     }
     
-    public static int[] generateHistogram(File imageFile) throws IOException {
-		int[] histogramArray = new int[256];
+    public static double[] generateHistogram(File imageFile) throws IOException {
+		double[] histogramArray = new double[256];
         BufferedImage image = ImageIO.read(imageFile);
-
+        double pixelValue = 1/(image.getHeight()*image.getWidth());
+        
         for(int h = 0; h < image.getHeight(); h++)
         {
             for(int w = 0; w < image.getWidth(); w++)
             {
                 Color c = new Color(image.getRGB(w, h));
-                histogramArray[c.getRed()]++;
+                histogramArray[c.getRed()] += pixelValue;
             }
         }
         
