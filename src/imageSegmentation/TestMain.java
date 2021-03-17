@@ -17,11 +17,13 @@ public class TestMain {
 		File imageFile = new File("src/imageSegmentation/swordcandle.png");
 		double[] hist = generateHistogram(imageFile);
 		
+		double total = 0;
 		for(double x : hist) {
+			total += x;
 			System.out.print(x + ", ");
 		}
 		
-		System.out.println("\n" + retrieveK(hist));
+		System.out.println("\n" + total + "\n" + retrieveK(hist));
 	}
 	
 	public static double[] generateHistogram(File imageFile) throws IOException {
@@ -42,7 +44,7 @@ public class TestMain {
 	} //end generateHistogram()
 	
 	public static double retrieveK(double[] histogram) {
-		double globalMean = 0, optK = 0, maxBCV = 0, bcv;
+		double globalMean = 0, optK = 0, maxBCV = Double.MIN_VALUE, bcv;
 		
 		//calculate global mean from histogram
 		for(int i = 0; i<histogram.length; i++) {
@@ -52,7 +54,6 @@ public class TestMain {
 		//find the maximum between-class variance for K
 		for(int k = 0; k<histogram.length; k++) {
 			bcv = betweenClassVariance(histogram, k, globalMean);
-			if(bcv < 0) {System.exit(88);}
 			if(bcv > maxBCV) {
 				optK = k;
 				maxBCV = bcv;
