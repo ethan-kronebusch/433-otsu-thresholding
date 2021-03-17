@@ -55,6 +55,7 @@ public class TestMain {
         return histogramArray;
 	} //end generateHistogram()
 	
+	//FIXME algorithm does not work properly. the image is too bright (according to other people's implementations).
 	public static double retrieveK(double[] histogram) {
 		double globalMean = 0, optK = 0, maxBCV = Double.MIN_VALUE, bcv;
 		
