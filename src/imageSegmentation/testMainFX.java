@@ -19,7 +19,7 @@ public class testMainFX extends Application {
  
     @Override
     public void start(Stage stage) throws IOException {
-    	File imageFile = new File("src/imageSegmentation/swordcandle.png");
+    	File imageFile = new File("src/imageSegmentation/harewood.jpg");
 		double[] hist = generateHistogram(imageFile);
     	
         stage.setTitle("Histogram");
@@ -53,8 +53,8 @@ public class testMainFX extends Application {
         {
             for(int w = 0; w < image.getWidth(); w++)
             {
-                Color c = new Color(image.getRGB(w, h));
-                histogramArray[c.getRed()] += pixelValue;
+            	int power = image.getRaster().getSample(w, h, 0);
+                histogramArray[power] += pixelValue;
             }
         }
         

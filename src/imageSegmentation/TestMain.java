@@ -14,7 +14,7 @@ public class TestMain {
 	}
 
 	public static void main(String[] args) throws IOException {
-		File imageFile = new File("src/imageSegmentation/swordcandle.jpg");
+		File imageFile = new File("src/imageSegmentation/test.jpg");
 		BufferedImage imageOut, image = ImageIO.read(imageFile);
 		double[] hist = generateHistogram(image);
 		double optK;
@@ -47,8 +47,8 @@ public class TestMain {
         {
             for(int w = 0; w < image.getWidth(); w++)
             {
-                Color c = new Color(image.getRGB(w, h));
-                histogramArray[c.getRed()] += pixelValue;
+            	int power = image.getRaster().getSample(w, h, 0);
+                histogramArray[power] += pixelValue;
             }
         }
         
@@ -57,16 +57,16 @@ public class TestMain {
 	
 	//FIXME algorithm does not work properly. the image is too bright (according to other people's implementations).
 	public static double retrieveK(double[] histogram) {
-		double globalMean = 0, optK = 0, maxBCV = Double.MIN_VALUE, bcv;
+		double optK = 0, maxBCV = Double.MIN_VALUE, bcv;
 		
-		//calculate global mean from histogram
+		/*calculate global mean from histogram
 		for(int i = 0; i<histogram.length; i++) {
 			globalMean += i*histogram[i];
-		}
+		}//*/
 		
 		//find the maximum between-class variance for K
 		for(int k = 0; k<histogram.length; k++) {
-			bcv = betweenClassVariance(histogram, k, globalMean);
+			bcv = betweenClassVariance(histogram, k);
 			if(bcv > maxBCV) {
 				optK = k;
 				maxBCV = bcv;
@@ -76,20 +76,30 @@ public class TestMain {
 		return optK;
 	}
 	
-	public static double betweenClassVariance(double[] histogram, double k, double globalMean) {
-		double cumMean = 0, classProb = 0, bcv;
+	public static double betweenClassVariance(double[] histogram, double k) {
+		double lowMean = 0, hiMean = 0, classProb = 0, bcv;
 		
-		//calculate class probability and cumulative mean
-		for(int i = 0; i <= k; i++) {
+		//calculate class probability
+		for(int i = 0; i < k; i++) {
 			classProb += histogram[i];
 		}
-		for(int i = 0; i <= k; i++) {
-			cumMean += i*histogram[i];
+		
+		//calculate average intensity of dark and light classes
+		for(int i = 0; i < k; i++) {
+			lowMean += i*histogram[i];
+		}
+		for(int i = (int)k; i < histogram.length; i++) {
+			hiMean += i*histogram[i];
 		}
 		
-		//calculate the between-class variance
-		bcv = Math.pow(globalMean*classProb-cumMean, 2);
-		bcv /= classProb*(1-classProb);
+		//calculate the average power of the dark class
+		lowMean /= classProb;
+		//calculate the average power of the light class
+		hiMean /= 1-classProb;
+		
+		//calculate between-class variance
+		bcv = Math.pow((lowMean - hiMean), 2);
+		bcv *= classProb*(1-classProb);
 		
 		return bcv;
 	}
@@ -104,7 +114,7 @@ public class TestMain {
             for(int w = 0; w < width; w++)
             {
                 Color c = new Color(input.getRGB(w, h));
-                if(c.getRed() <= k) {
+                if(c.getRed() < k) {
                 	output.setRGB(w, h, Color.black.getRGB());
                 }else {
                 	output.setRGB(w, h, Color.white.getRGB());
