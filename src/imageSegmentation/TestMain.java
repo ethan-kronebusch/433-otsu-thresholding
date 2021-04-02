@@ -1,6 +1,5 @@
 package imageSegmentation;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +13,7 @@ public class TestMain {
 	}
 
 	public static void main(String[] args) throws IOException {
-		File imageFile = new File("src/imageSegmentation/test.jpg");
+		File imageFile = new File("src/imageSegmentation/harewood.jpg");
 		BufferedImage imageOut, image = ImageIO.read(imageFile);
 		double[] hist = generateHistogram(image);
 		double optK;
@@ -55,18 +54,13 @@ public class TestMain {
         return histogramArray;
 	} //end generateHistogram()
 	
-	//FIXME algorithm does not work properly. the image is too bright (according to other people's implementations).
 	public static double retrieveK(double[] histogram) {
 		double optK = 0, maxBCV = Double.MIN_VALUE, bcv;
-		
-		/*calculate global mean from histogram
-		for(int i = 0; i<histogram.length; i++) {
-			globalMean += i*histogram[i];
-		}//*/
 		
 		//find the maximum between-class variance for K
 		for(int k = 0; k<histogram.length; k++) {
 			bcv = betweenClassVariance(histogram, k);
+			
 			if(bcv > maxBCV) {
 				optK = k;
 				maxBCV = bcv;
@@ -113,11 +107,11 @@ public class TestMain {
         {
             for(int w = 0; w < width; w++)
             {
-                Color c = new Color(input.getRGB(w, h));
-                if(c.getRed() < k) {
-                	output.setRGB(w, h, Color.black.getRGB());
+            	int power = input.getRaster().getSample(w, h, 0);
+                if(power < k) {
+                	output.setRGB(w, h, 0);
                 }else {
-                	output.setRGB(w, h, Color.white.getRGB());
+                	output.setRGB(w, h, -1);
                 }
             }
         }
