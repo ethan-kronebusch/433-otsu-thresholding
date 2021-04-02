@@ -38,6 +38,7 @@ public class Scene1Controller {
     
     private String filePath = null;
     private File imageFile;
+    private BufferedImage image;
     double[] hist;
 
     @FXML
@@ -55,8 +56,9 @@ public class Scene1Controller {
     	
     	if(!filePath.isBlank()) {
     		imageFile = new File(filePath);
+    		image = ImageIO.read(imageFile);
     		
-    		hist = generateHistogram(imageFile);
+    		hist = generateHistogram(image);
     		displayHistogram(hist);
     		
     		imageDisplayPane.getChildren().add(new ImageView(imageFile.toURI().toURL().toExternalForm()));
@@ -67,22 +69,21 @@ public class Scene1Controller {
 
     }
     
-    public static double[] generateHistogram(File imageFile) throws IOException {
+    public static double[] generateHistogram(BufferedImage image) throws IOException {
 		double[] histogramArray = new double[256];
-        BufferedImage image = ImageIO.read(imageFile);
         double pixelValue = (double)1/(image.getHeight()*image.getWidth());
         
         for(int h = 0; h < image.getHeight(); h++)
         {
             for(int w = 0; w < image.getWidth(); w++)
             {
-                Color c = new Color(image.getRGB(w, h));
-                histogramArray[c.getRed()] += pixelValue;
+            	int power = image.getRaster().getSample(w, h, 0);
+                histogramArray[power] += pixelValue;
             }
         }
         
         return histogramArray;
-	} //end generateHistogram
+	} //end generateHistogram()
     
     public void displayHistogram(double[] histogramArray) {
     	Stage stage = new Stage();
