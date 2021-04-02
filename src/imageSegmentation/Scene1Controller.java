@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class Scene1Controller {
@@ -45,7 +46,9 @@ public class Scene1Controller {
     void browseButtonAction(ActionEvent event) {
     	FileChooser fileChooser = new FileChooser();
     	fileChooser.setTitle("Open Resource File");
-    	imageFile = fileChooser.showOpenDialog(imageDisplayPane.getScene().getWindow());
+    	fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+    	
+    	imageFile = fileChooser.showOpenDialog(null);
     	filePathTextField.setText(imageFile.toString());
 
     }
