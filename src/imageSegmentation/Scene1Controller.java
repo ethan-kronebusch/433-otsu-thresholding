@@ -3,8 +3,10 @@ package imageSegmentation;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 
 import javafx.event.ActionEvent;
@@ -44,13 +46,18 @@ public class Scene1Controller {
 
     @FXML
     void browseButtonAction(ActionEvent event) {
-    	FileChooser fileChooser = new FileChooser();
-    	fileChooser.setTitle("Open Resource File");
-    	fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
-    	
-    	imageFile = fileChooser.showOpenDialog(null);
-    	filePathTextField.setText(imageFile.toString());
-
+    	try {
+    		FileChooser fileChooser = new FileChooser();
+        	fileChooser.setTitle("Open Resource File");
+        	fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+        	
+        	imageFile = fileChooser.showOpenDialog(null);
+        	filePathTextField.setText(imageFile.toString());
+    	}
+    	catch(NullPointerException e) {
+    		System.out.println(e.toString());
+    		System.out.println("No file was selected");
+    	}
     }
 
     @FXML
@@ -58,13 +65,25 @@ public class Scene1Controller {
     	filePath = filePathTextField.getText();
     	
     	if(!filePath.isBlank()) {
-    		imageFile = new File(filePath);
-    		image = ImageIO.read(imageFile);
+    		try {
+    			imageFile = new File(filePath);
+        		image = ImageIO.read(imageFile);
+        		
+        		hist = generateHistogram(image);
+        		displayHistogram(hist);
+        		
+        		imageDisplayPane.getChildren().add(new ImageView(imageFile.toURI().toURL().toExternalForm()));
+    		}
+    		catch(NullPointerException e) {
+    			System.out.println("Incorrect File Type!");
+    		}
+    		catch(IIOException e) {
+    			System.out.println("Incorrect Filepath!");
+    		}
+    		catch(Exception e) {
+    			System.out.println(e.toString());
+    		}
     		
-    		hist = generateHistogram(image);
-    		displayHistogram(hist);
-    		
-    		imageDisplayPane.getChildren().add(new ImageView(imageFile.toURI().toURL().toExternalForm()));
     	}
     	else {
     		filePathTextField.setPromptText("Please select a file!!");
