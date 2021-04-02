@@ -118,4 +118,43 @@ public class TestMain {
 		
 		return output;
 	}
+	
+	//TODO test method
+	public static BufferedImage meanFilter(BufferedImage input, int filterRadius) {
+		//apply a mean filter to smooth the image
+		int width = input.getWidth(), height = input.getHeight();
+		BufferedImage output = new BufferedImage(width, height, input.getType());
+		
+		//iterate through the image
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				
+				int total=0;
+				//for each pixel, iterate through the filter
+				for(int fy = y-filterRadius;fy <= y+filterRadius; fy++) {
+					for(int fx = x-filterRadius;fx <= x+filterRadius; fx++) {
+						//use mirror padding
+						int corX = Math.abs(fx);
+						int corY = Math.abs(fy);
+						if(corX >= width) {
+							corX = (width-1)*2 - corX;
+						}
+						if(corY >= height) {
+							corY = (height-1)*2 - corY;
+						}
+						
+						total += input.getRaster().getSample(corX, corY, 0);
+					}
+				}
+				
+				//get the average intensity
+				total /= Math.pow((filterRadius*2)+1,2);
+				//convert to RGB integer & set colour
+				String binary = Integer.toBinaryString(total).substring(24);
+				output.setRGB(x, y, Integer.parseInt("11111111" + binary.repeat(3), 2));
+			}
+		}
+		
+		return output;
+	}
 }
