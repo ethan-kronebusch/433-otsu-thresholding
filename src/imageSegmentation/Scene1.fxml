@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Scene1Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="imageSegmentation.Scene1Controller">
    <children>
       <Button fx:id="selectImageButton" layoutX="285.0" layoutY="459.0" mnemonicParsing="false" onAction="#selectImageButtonAction" text="Select Image" />
       <TextField fx:id="filePathTextField" layoutX="285.0" layoutY="426.0" promptText="Enter file path" />
