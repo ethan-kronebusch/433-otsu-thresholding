@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -43,7 +44,7 @@ public class Scene1Controller {
     
     private String filePath = null;
     private File imageFile;
-    private BufferedImage image;
+    private BufferedImage inputImage;
     double[] hist;
 
     @FXML
@@ -69,15 +70,17 @@ public class Scene1Controller {
     	if(!filePath.isBlank()) {
     		try {
     			imageFile = new File(filePath);
-        		image = ImageIO.read(imageFile);
+        		inputImage = ImageIO.read(imageFile);
         		
-        		hist = generateHistogram(image);
+        		hist = generateHistogram(inputImage);
         		displayHistogram(hist);
         		
-        		FileInputStream inputstream = new FileInputStream(filePath);
-        		Image image = new Image(inputstream);
+        		//FileInputStream inputstream = new FileInputStream(filePath);
+        		//Image image = new Image(inputstream);
         		
-        		inputImageView.setImage(image);
+        		Image temp = SwingFXUtils.toFXImage(inputImage, null);
+        		
+        		inputImageView.setImage(temp);
         		inputImageView.setPreserveRatio(true);
         		
         		
