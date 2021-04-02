@@ -3,6 +3,7 @@ package imageSegmentation;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -36,7 +38,7 @@ public class Scene1Controller {
     private Button browseButton;
     
     @FXML
-    private Pane imageDisplayPane;
+    private ImageView inputImageView;
     
     
     private String filePath = null;
@@ -72,7 +74,13 @@ public class Scene1Controller {
         		hist = generateHistogram(image);
         		displayHistogram(hist);
         		
-        		imageDisplayPane.getChildren().add(new ImageView(imageFile.toURI().toURL().toExternalForm()));
+        		FileInputStream inputstream = new FileInputStream(filePath);
+        		Image image = new Image(inputstream);
+        		
+        		inputImageView.setImage(image);
+        		inputImageView.setPreserveRatio(true);
+        		
+        		
     		}
     		catch(NullPointerException e) {
     			System.out.println("Incorrect File Type!");
