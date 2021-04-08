@@ -50,8 +50,9 @@ public class Scene1Controller {
     
     private String filePath = null;
     private File imageFile;
-    private BufferedImage inputImage;
-    double[] inputHist;
+    private BufferedImage inputImage, outputImage;
+    private double[] inputHist;
+    private double optK;
 
     @FXML
     void browseButtonAction(ActionEvent event) {
@@ -81,13 +82,21 @@ public class Scene1Controller {
         		
         		inputHist = generateHistogram(inputImage);
         		
+        		optK = retrieveK(inputHist);
+        		
+        		outputImage = thresholdImage(inputImage, optK);
+        		
         		//FileInputStream inputstream = new FileInputStream(filePath);
         		//Image image = new Image(inputstream);
         		
-        		Image image = SwingFXUtils.toFXImage(inputImage, null);
+        		Image imageIn = SwingFXUtils.toFXImage(inputImage, null);
+        		Image imageOut = SwingFXUtils.toFXImage(outputImage, null);
         		
-        		inputImageView.setImage(image);
+        		inputImageView.setImage(imageIn);
         		inputImageView.setPreserveRatio(true);
+        		
+        		outputImageView.setImage(imageOut);
+        		outputImageView.setPreserveRatio(true);
         		
         		inputHistButton.setOpacity(1);
         		inputHistButton.setDisable(false);
@@ -148,5 +157,70 @@ public class Scene1Controller {
         stage.setScene(scene);
         stage.show(); 
     } //end displayHistogram
+    
+    public static double retrieveK(double[] histogram) {
+		double optK = 0, maxBCV = Double.MIN_VALUE, bcv;
+		
+		//find the maximum between-class variance for K
+		for(int k = 0; k<histogram.length; k++) {
+			bcv = betweenClassVariance(histogram, k);
+			
+			if(bcv > maxBCV) {
+				optK = k;
+				maxBCV = bcv;
+			}
+		}
+		
+		return optK;
+	}
+	
+	public static double betweenClassVariance(double[] histogram, double k) {
+		double lowMean = 0, hiMean = 0, classProb = 0, bcv;
+		
+		//calculate class probability
+		for(int i = 0; i < k; i++) {
+			classProb += histogram[i];
+		}
+		
+		//calculate average intensity of dark and light classes
+		for(int i = 0; i < k; i++) {
+			lowMean += i*histogram[i];
+		}
+		for(int i = (int)k; i < histogram.length; i++) {
+			hiMean += i*histogram[i];
+		}
+		
+		//calculate the average power of the dark class
+		lowMean /= classProb;
+		//calculate the average power of the light class
+		hiMean /= 1-classProb;
+		
+		//calculate between-class variance
+		bcv = Math.pow((lowMean - hiMean), 2);
+		bcv *= classProb*(1-classProb);
+		
+		return bcv;
+	}
+	
+	public static BufferedImage thresholdImage(BufferedImage input, double k) {
+		int height = input.getHeight();
+		int width = input.getWidth();
+		BufferedImage output = new BufferedImage(width, height, input.getType());
+		
+		for(int h = 0; h < height; h++)
+        {
+            for(int w = 0; w < width; w++)
+            {
+            	int power = input.getRaster().getSample(w, h, 0);
+                if(power < k) {
+                	output.setRGB(w, h, 0);
+                }else {
+                	output.setRGB(w, h, -1);
+                }
+            }
+        }
+		
+		return output;
+	}
 
 }
