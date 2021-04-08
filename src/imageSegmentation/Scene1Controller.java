@@ -41,11 +41,17 @@ public class Scene1Controller {
     @FXML
     private ImageView inputImageView;
     
+    @FXML
+    private ImageView outputImageView;
+
+    @FXML
+    private Button inputHistButton;
+    
     
     private String filePath = null;
     private File imageFile;
     private BufferedImage inputImage;
-    double[] hist;
+    double[] inputHist;
 
     @FXML
     void browseButtonAction(ActionEvent event) {
@@ -66,24 +72,25 @@ public class Scene1Controller {
     @FXML
     void selectImageButtonAction(ActionEvent event) throws IOException {
     	filePath = filePathTextField.getText();
+    	filePathTextField.setText("");
     	
     	if(!filePath.isBlank()) {
     		try {
     			imageFile = new File(filePath);
         		inputImage = ImageIO.read(imageFile);
         		
-        		hist = generateHistogram(inputImage);
-        		displayHistogram(hist);
+        		inputHist = generateHistogram(inputImage);
         		
         		//FileInputStream inputstream = new FileInputStream(filePath);
         		//Image image = new Image(inputstream);
         		
-        		Image temp = SwingFXUtils.toFXImage(inputImage, null);
+        		Image image = SwingFXUtils.toFXImage(inputImage, null);
         		
-        		inputImageView.setImage(temp);
+        		inputImageView.setImage(image);
         		inputImageView.setPreserveRatio(true);
         		
-        		
+        		inputHistButton.setOpacity(1);
+        		inputHistButton.setDisable(false);
     		}
     		catch(NullPointerException e) {
     			System.out.println("Incorrect File Type!");
@@ -100,6 +107,11 @@ public class Scene1Controller {
     		filePathTextField.setPromptText("Please select a file!!");
     	}
 
+    }
+    
+    @FXML
+    void selectInputHistButtonAction(ActionEvent event) {
+    	displayHistogram(inputHist);
     }
     
     public static double[] generateHistogram(BufferedImage image) throws IOException {

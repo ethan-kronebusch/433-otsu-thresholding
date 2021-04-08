@@ -5,11 +5,13 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="imageSegmentation.Scene1Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="imageSegmentation.Scene1Controller">
    <children>
-      <Button fx:id="selectImageButton" layoutX="285.0" layoutY="459.0" mnemonicParsing="false" onAction="#selectImageButtonAction" text="Select Image" />
-      <TextField fx:id="filePathTextField" layoutX="285.0" layoutY="426.0" promptText="Enter file path" />
-      <Button fx:id="browseButton" layoutX="452.0" layoutY="426.0" mnemonicParsing="false" onAction="#browseButtonAction" text="Browse" />
-      <ImageView fx:id="inputImageView" fitHeight="361.0" fitWidth="495.0" layoutX="121.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="selectImageButton" layoutX="337.0" layoutY="559.0" mnemonicParsing="false" onAction="#selectImageButtonAction" text="Select Image" />
+      <TextField fx:id="filePathTextField" layoutX="337.0" layoutY="526.0" promptText="Enter file path" />
+      <Button fx:id="browseButton" layoutX="504.0" layoutY="526.0" mnemonicParsing="false" onAction="#browseButtonAction" text="Browse" />
+      <ImageView fx:id="inputImageView" fitHeight="315.0" fitWidth="441.0" layoutX="9.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="outputImageView" fitHeight="315.0" fitWidth="441.0" layoutX="434.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="inputHistButton" disable="true" layoutX="165.0" layoutY="49.0" mnemonicParsing="false" onAction="#selectInputHistButtonAction" opacity="0.0" prefHeight="27.0" prefWidth="130.0" text="Show Histogtam" />
    </children>
 </Pane>
