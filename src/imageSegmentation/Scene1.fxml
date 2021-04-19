@@ -12,6 +12,8 @@
       <Button fx:id="browseButton" layoutX="504.0" layoutY="526.0" mnemonicParsing="false" onAction="#browseButtonAction" text="Browse" />
       <ImageView fx:id="inputImageView" fitHeight="315.0" fitWidth="441.0" layoutX="9.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="outputImageView" fitHeight="315.0" fitWidth="441.0" layoutX="434.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="inputHistButton" disable="true" layoutX="165.0" layoutY="49.0" mnemonicParsing="false" onAction="#selectInputHistButtonAction" opacity="0.0" prefHeight="27.0" prefWidth="130.0" text="Show Histogtam" />
+      <Button fx:id="inputHistButton" disable="true" layoutX="165.0" layoutY="49.0" mnemonicParsing="false" onAction="#selectInputHistButtonAction" opacity="0.0" prefHeight="27.0" prefWidth="130.0" text="Show Histogram" />
+      <Button fx:id="outputHistButton" disable="true" layoutX="465.0" layoutY="49.0" mnemonicParsing="false" onAction="#selectOutputHistButtonAction" opacity="0.0" prefHeight="27.0" prefWidth="130.0" text="Show Histogram" />
+      <Button fx:id="saveButton" disable="true" layoutX="475.0" layoutY="446.0" mnemonicParsing="false" onAction="#saveButtonAction" opacity="0.0" prefHeight="27.0" prefWidth="130.0" text="Save Image" />
    </children>
 </Pane>

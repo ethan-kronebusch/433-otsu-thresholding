@@ -47,11 +47,16 @@ public class Scene1Controller {
     @FXML
     private Button inputHistButton;
     
+    @FXML
+    private Button outputHistButton;
+    
+    @FXML
+    private Button saveButton;
     
     private String filePath = null;
     private File imageFile;
     private BufferedImage inputImage, outputImage;
-    private double[] inputHist;
+    private double[] inputHist, outputHist;
     private double optK;
 
     @FXML
@@ -83,8 +88,12 @@ public class Scene1Controller {
         		inputHist = generateHistogram(inputImage);
         		
         		optK = retrieveK(inputHist);
+        		System.out.println("k = " + optK);
         		
-        		outputImage = thresholdImage(inputImage, optK);
+        		outputImage = meanFilter(inputImage, 1);
+        		outputImage = thresholdImage(outputImage, optK);
+        		
+        		outputHist = generateHistogram(outputImage);
         		
         		//FileInputStream inputstream = new FileInputStream(filePath);
         		//Image image = new Image(inputstream);
@@ -100,6 +109,10 @@ public class Scene1Controller {
         		
         		inputHistButton.setOpacity(1);
         		inputHistButton.setDisable(false);
+        		outputHistButton.setOpacity(1);
+        		outputHistButton.setDisable(false);
+        		saveButton.setOpacity(1);
+        		saveButton.setDisable(false);
     		}
     		catch(NullPointerException e) {
     			System.out.println("Incorrect File Type!");
@@ -121,6 +134,32 @@ public class Scene1Controller {
     @FXML
     void selectInputHistButtonAction(ActionEvent event) {
     	displayHistogram(inputHist);
+    }
+    
+    @FXML
+    void selectOutputHistButtonAction(ActionEvent event) {
+    	displayHistogram(outputHist);
+    }
+    
+    @FXML
+    void saveButtonAction(ActionEvent event) {
+    	try {
+    		FileChooser fileChooser = new FileChooser();
+    		ExtensionFilter jpg = new ExtensionFilter("JPEG file", "*.jpg", "*.jpeg", "*.jfif");
+    		ExtensionFilter png = new ExtensionFilter("PNG file", "*.png");
+    		
+        	fileChooser.setTitle("Save image File");
+        	fileChooser.getExtensionFilters().addAll(jpg, png);
+        	
+        	imageFile = fileChooser.showSaveDialog(null);
+        	ImageIO.write(outputImage, fileChooser.getSelectedExtensionFilter().getExtensions().get(0).substring(2), imageFile);
+    	}
+    	catch(NullPointerException e) {
+    		System.out.println("No file was selected");
+    	}
+    	catch(IOException x) {
+    		
+    	}
     }
     
     public static double[] generateHistogram(BufferedImage image) throws IOException {
@@ -223,4 +262,41 @@ public class Scene1Controller {
 		return output;
 	}
 
+	public static BufferedImage meanFilter(BufferedImage input, int filterRadius) {
+		//apply a mean filter to smooth the image
+		int width = input.getWidth(), height = input.getHeight();
+		BufferedImage output = new BufferedImage(width, height, input.getType());
+		
+		//iterate through the image
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				
+				int total=0;
+				//for each pixel, iterate through the filter
+				for(int fy = y-filterRadius;fy <= y+filterRadius; fy++) {
+					for(int fx = x-filterRadius;fx <= x+filterRadius; fx++) {
+						//use mirror padding
+						int corX = Math.abs(fx);
+						int corY = Math.abs(fy);
+						if(corX >= width) {
+							corX = (width-1)*2 - corX;
+						}
+						if(corY >= height) {
+							corY = (height-1)*2 - corY;
+						}
+						
+						total += input.getRaster().getSample(corX, corY, 0);
+					}
+				}
+				
+				//get the average intensity
+				total /= Math.pow((filterRadius*2)+1,2);
+				//convert to RGB integer & set colour
+				Color c = new Color(total, total, total);
+				output.setRGB(x, y, c.getRGB());
+			}
+		}
+		
+		return output;
+	}
 }
